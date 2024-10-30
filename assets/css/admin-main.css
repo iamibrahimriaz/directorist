@@ -15227,6 +15227,9 @@ input:-webkit-autofill:active {
 .cptm-form-builder-group-header-section {
   margin-bottom: 8px;
 }
+.cptm-form-builder-group-header-section.expanded .cptm-form-builder-group-title .cptm-form-builder-header-action-link {
+  opacity: 1;
+}
 
 .cptm-form-builder-group-header {
   display: -webkit-box;
@@ -20428,6 +20431,9 @@ input[type=radio]:checked::before {
 
 .cptm-form-builder-group-header-section {
   margin-bottom: 8px;
+}
+.cptm-form-builder-group-header-section.expanded .cptm-form-builder-group-title .cptm-form-builder-header-action-link {
+  opacity: 1;
 }
 
 .cptm-form-builder-group-header {
@@ -25897,6 +25903,9 @@ input[type=radio]:checked::before {
 
 .cptm-form-builder-group-header-section {
   margin-bottom: 8px;
+}
+.cptm-form-builder-group-header-section.expanded .cptm-form-builder-group-title .cptm-form-builder-header-action-link {
+  opacity: 1;
 }
 
 .cptm-form-builder-group-header {
