@@ -1955,24 +1955,25 @@ if ( ! function_exists('atbdp_is_page') ) {
             ],
         ];
 
-        // Check if the specified page type matches the current page.
         if ( isset( $page_map[ $page_type ] ) ) {
-            $option    = $page_map[ $page_type ]['option'];
-            $page_id   = get_directorist_option( $option );
-
-            if ( is_page( $page_id ) ) {
+            $page_option_name = $page_map[ $page_type ]['option'];
+            $page_id = get_directorist_option( $page_option_name );
+        
+            $page_object = get_post( $page_id ); // Retrieve the page object using the page ID. Using get_post instead of is_page avoids AJAX issues.
+        
+            if ( $page_object instanceof WP_Post && 'page' === $page_object->post_type ) {
                 return true;
             }
 
-            $shortcode     = $page_map[ $page_type ]['shortcode'];
-            $has_shortcode = isset( $post->post_content ) && has_shortcode( $post->post_content, $shortcode );
+            $expected_shortcode = $page_map[ $page_type ]['shortcode'];
 
-            if ( $has_shortcode ) {
+            $has_shortcode_in_content = isset( $post->post_content ) && has_shortcode( $post->post_content, $expected_shortcode );
+        
+            if ( $has_shortcode_in_content ) {
                 return true;
             }
         }
 
-        // Return false if no match is found.
         return false;
     }
 }
