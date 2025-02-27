@@ -271,5 +271,80 @@ window.addEventListener('load', () => {
             $(data_target).slideToggle();
         }
     });
-    
+
+    // Builder Directory Types Drag and Drop
+    const builderDragNDropWrapper = document.querySelector(".directorist_builder__list");
+    let builderDraggableItem = null;
+
+    builderDragNDropWrapper.querySelectorAll(".directorist_builder__list__item a").forEach((link) => {
+        link.addEventListener("dragstart", (event) => {
+            event.preventDefault(); 
+        });
+    });
+
+    // Prevent child elements from triggering drag independently
+    builderDragNDropWrapper.querySelectorAll(".directorist_builder__list__item *").forEach((child) => {
+        child.addEventListener("dragstart", (e) => {
+            e.stopPropagation(); 
+        });
+    });
+
+    // Drag Start
+    builderDragNDropWrapper.addEventListener("dragstart", (event) => {
+        builderDraggableItem = event.target.closest(".directorist_builder__list__item");
+
+        // Ensure only the main div with draggable="true" is draggable
+        if (!builderDraggableItem || !builderDraggableItem.hasAttribute("draggable")) {
+            event.preventDefault();
+            return;
+        }
+
+        builderDraggableItem.classList.add("dragging");
+    });
+
+    // Drag Over
+    builderDragNDropWrapper.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const draggingItem = document.querySelector(".dragging");
+
+        if (!draggingItem) return;
+
+        const afterElement = getDragAfterElement(builderDragNDropWrapper, e.clientY);
+
+        // Ensure it's only inserted when necessary
+        if (afterElement && afterElement !== draggingItem.nextSibling) {
+            builderDragNDropWrapper.insertBefore(draggingItem, afterElement);
+        } else if (!afterElement) {
+            builderDragNDropWrapper.appendChild(draggingItem);
+        }
+    });
+
+    // Drag End
+    builderDragNDropWrapper.addEventListener("dragend", () => {
+        const newBuilderItemsOrder = [...builderDragNDropWrapper.children].map((item) => item.dataset.termId);
+        
+        builderDraggableItem.classList.remove("dragging");
+        updateBuilderList(newBuilderItemsOrder);
+    });
+
+    // Get the closest element to the dragged item
+    function getDragAfterElement(builderDragNDropWrapper, y) {
+        const draggableElements = [...builderDragNDropWrapper.querySelectorAll(".directorist_builder__list__item:not(.dragging)")];
+        if (draggableElements.length === 0) return null;
+
+        return draggableElements.reduce(
+            (closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
+            },
+            { offset: Number.NEGATIVE_INFINITY, element: null }
+        ).element;
+    }
+
+    // Update the order of the draggable items
+    function updateBuilderList(order) {
+        console.log("@updateBuilderList:", {order});
+    }
 });
