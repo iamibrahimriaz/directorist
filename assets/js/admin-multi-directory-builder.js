@@ -1596,13 +1596,13 @@
 					__webpack_require__(
 						/*! @babel/runtime/helpers/typeof */ './node_modules/@babel/runtime/helpers/esm/typeof.js'
 					);
-				/* harmony import */ var _input_field_props_js__WEBPACK_IMPORTED_MODULE_1__ =
-					__webpack_require__(
-						/*! ./input-field-props.js */ './assets/src/js/admin/vue/mixins/form-fields/input-field-props.js'
-					);
-				/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ =
+				/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ =
 					__webpack_require__(
 						/*! ../helpers */ './assets/src/js/admin/vue/mixins/helpers.js'
+					);
+				/* harmony import */ var _input_field_props_js__WEBPACK_IMPORTED_MODULE_2__ =
+					__webpack_require__(
+						/*! ./input-field-props.js */ './assets/src/js/admin/vue/mixins/form-fields/input-field-props.js'
 					);
 
 				function _createForOfIteratorHelper(r, e) {
@@ -1690,10 +1690,10 @@
 				/* harmony default export */ __webpack_exports__['default'] = {
 					name: 'export-data-field',
 					mixins: [
-						_input_field_props_js__WEBPACK_IMPORTED_MODULE_1__[
+						_input_field_props_js__WEBPACK_IMPORTED_MODULE_2__[
 							'default'
 						],
-						_helpers__WEBPACK_IMPORTED_MODULE_2__['default'],
+						_helpers__WEBPACK_IMPORTED_MODULE_1__['default'],
 					],
 					created: function created() {
 						if (this.buttonLabel && this.buttonLabel.length) {
@@ -1782,9 +1782,18 @@
 								});
 						},
 						downloadURI: function downloadURI(name, uri) {
+							// Mixed content fix: if current page is HTTPS but the URI is HTTP
+							if (
+								window.location.protocol === 'https:' &&
+								uri.startsWith('http://')
+							) {
+								uri = uri.replace('http://', 'https://');
+							}
 							var link = document.createElement('a');
-							link.download = name;
-							link.href = uri;
+							link.setAttribute('download', name);
+							link.setAttribute('href', uri);
+
+							// Append to body for Firefox compatibility
 							document.body.appendChild(link);
 							link.click();
 							document.body.removeChild(link);

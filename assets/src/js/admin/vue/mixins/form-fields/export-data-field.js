@@ -1,5 +1,5 @@
-import props from './input-field-props.js';
 import helpers from '../helpers';
+import props from './input-field-props.js';
 const axios = require('axios').default;
 
 export default {
@@ -90,13 +90,21 @@ export default {
 		},
 
 		downloadURI(name, uri) {
-			var link = document.createElement('a');
-			link.download = name;
-			link.href = uri;
+			// Mixed content fix: if current page is HTTPS but the URI is HTTP
+			if (
+				window.location.protocol === 'https:' &&
+				uri.startsWith('http://')
+			) {
+				uri = uri.replace('http://', 'https://');
+			}
+
+			const link = document.createElement('a');
+			link.setAttribute('download', name);
+			link.setAttribute('href', uri);
+
+			// Append to body for Firefox compatibility
 			document.body.appendChild(link);
-
 			link.click();
-
 			document.body.removeChild(link);
 		},
 
